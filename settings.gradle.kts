@@ -1,3 +1,1 @@
-rootProject.name = "MzLib"
-include(":MzLibAgent")
-include(":MzLibPlugin")
+rootProject.name = "MzLang"

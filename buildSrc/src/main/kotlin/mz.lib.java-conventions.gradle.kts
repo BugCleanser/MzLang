@@ -14,8 +14,8 @@ repositories {
     maven { url = uri("https://repo.maven.apache.org/maven2/") }
 }
 
-group = "mz.lib"
-version = "10.0.1-pre48-test10"
+group = "mz.mzlang"
+version = "0.1"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {
