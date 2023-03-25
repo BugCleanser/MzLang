@@ -128,7 +128,15 @@ public class MzLangParser
 						boolean hex=false;
 						if(sign=='0')
 						{
-							if(Character.toLowerCase(reader.read())=='x')
+							try
+							{
+								sign=Character.toLowerCase(reader.read());
+							}
+							catch(StringIndexOutOfBoundsException e)
+							{
+								sign=' ';
+							}
+							if(sign=='x')
 							{
 								hex=true;
 								sb.append('x');
@@ -138,7 +146,14 @@ public class MzLangParser
 						}
 						for(;;)
 						{
-							sign=Character.toLowerCase(reader.read());
+							try
+							{
+								sign=Character.toLowerCase(reader.read());
+							}
+							catch(StringIndexOutOfBoundsException e)
+							{
+								sign=' ';
+							}
 							if(sign>='0'&&sign<='9' || hex&&sign>='a'&&sign<='f' || (!hex)&&sign=='.')
 								sb.append(sign);
 							else
