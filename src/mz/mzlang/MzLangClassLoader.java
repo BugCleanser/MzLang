@@ -14,20 +14,14 @@ public class MzLangClassLoader extends ClassLoader
 	}
 	
 	public Map<String,MzLangClass> loadedClasses=new ConcurrentHashMap<>();
-	public Map<MzLangClass,Class<? extends MzLangObject>> classObjects=new ConcurrentHashMap<>();
 	
 	void load(String code)
 	{
 		MzLangClass mlc=MzLangCompiler.compile(code);
 		if(loadedClasses.containsKey(mlc.getName()))
-		{
-			if(classObjects.containsKey(mlc))
-				return;
 			throw new RuntimeException("Class loading with the same name.");
-		}
 		mlc.load();
 		loadedClasses.put(mlc.getName(),mlc);
-		classObjects.put(mlc,mlc.getJvmClass());
 	}
 	
 	@Override
@@ -35,11 +29,7 @@ public class MzLangClassLoader extends ClassLoader
 	{
 		MzLangClass mlc=loadedClasses.get(name);
 		if(mlc!=null)
-		{
-			Class<? extends MzLangObject> ans=classObjects.get(mlc);
-			if(ans!=null)
-				return ans;
-		}
+			return mlc.getJvmClass();
 		throw new ClassNotFoundException(name);
 	}
 }

@@ -4,6 +4,7 @@ import java.util.*;
 
 public class MzLangClass
 {
+	public UUID uuid=UUID.randomUUID();
 	public String name;
 	public Class<? extends MzLangObject> jvmClass;
 	public String getName()
@@ -12,7 +13,9 @@ public class MzLangClass
 	}
 	public Class<? extends MzLangObject> getJvmClass()
 	{
-		return Objects.requireNonNull(jvmClass);
+		if(jvmClass==null)
+			load();
+		return jvmClass;
 	}
 	
 	public void load()
