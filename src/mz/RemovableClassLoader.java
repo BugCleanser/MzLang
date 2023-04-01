@@ -3,7 +3,7 @@ package mz;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class ActiveClassLoader
+public class RemovableClassLoader
 {
 	public class Part extends ClassLoader
 	{
@@ -12,7 +12,7 @@ public class ActiveClassLoader
 		public Class<?> contentClass;
 		public Part(String className,byte[] byteCode)
 		{
-			super(ActiveClassLoader.this.parent);
+			super(RemovableClassLoader.this.parent);
 			this.className=className;
 			this.byteCode=byteCode;
 		}
@@ -25,12 +25,12 @@ public class ActiveClassLoader
 		@Override
 		public Class<?> findClass(String name) throws ClassNotFoundException
 		{
-			return ActiveClassLoader.this.findClass(name);
+			return RemovableClassLoader.this.findClass(name);
 		}
 	}
 	public ClassLoader parent;
 	public Map<String,Part> classes;
-	public ActiveClassLoader(ClassLoader parent)
+	public RemovableClassLoader(ClassLoader parent)
 	{
 		this.parent=parent;
 		this.classes=new ConcurrentHashMap<>();

@@ -5,7 +5,7 @@ import mz.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public class MzLangClassLoader extends ActiveClassLoader
+public class MzLangClassLoader extends RemovableClassLoader
 {
 	public static MzLangClassLoader instance;
 	public MzLangClassLoader(ClassLoader parent)
@@ -15,6 +15,12 @@ public class MzLangClassLoader extends ActiveClassLoader
 	
 	public Map<String,String> codeToLoad=new ConcurrentHashMap<>();
 	public Map<MzMethodHead,Part> interfaces=new ConcurrentHashMap<>();
+	
+	
+	public void addClass(String name,String code)
+	{
+		codeToLoad.put(name,code);
+	}
 	
 	@Override
 	public Class<?> findClass(String name) throws ClassNotFoundException
