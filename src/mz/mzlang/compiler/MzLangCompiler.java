@@ -9,7 +9,7 @@ public class MzLangCompiler
 		MzLangClassLoader.instance=new MzLangClassLoader(ClassLoader.getSystemClassLoader());
 	}
 	
-	public static MzLangClass compile(String code)
+	public static MzClass compile(String code)
 	{
 		return null;
 	}

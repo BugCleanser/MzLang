@@ -1,8 +1,9 @@
 package mz;
 
 import java.util.*;
+import java.util.concurrent.*;
 
-public class UnloadableClassLoader
+public class ActiveClassLoader
 {
 	public class Part extends ClassLoader
 	{
@@ -11,7 +12,7 @@ public class UnloadableClassLoader
 		public Class<?> contentClass;
 		public Part(String className,byte[] byteCode)
 		{
-			super(UnloadableClassLoader.this.parent);
+			super(ActiveClassLoader.this.parent);
 			this.className=className;
 			this.byteCode=byteCode;
 		}
@@ -24,18 +25,23 @@ public class UnloadableClassLoader
 		@Override
 		public Class<?> findClass(String name) throws ClassNotFoundException
 		{
-			return UnloadableClassLoader.this.findClass(name);
+			return ActiveClassLoader.this.findClass(name);
 		}
 	}
 	public ClassLoader parent;
 	public Map<String,Part> classes;
-	public UnloadableClassLoader(ClassLoader parent)
+	public ActiveClassLoader(ClassLoader parent)
 	{
 		this.parent=parent;
+		this.classes=new ConcurrentHashMap<>();
 	}
-	public void addClass(String className,byte[] byteCode)
+	public void addClass(String name,byte[] byteCode)
 	{
-		classes.put(className,new Part(className,byteCode));
+		classes.put(name,new Part(name,byteCode));
+	}
+	public void removeClass(String name)
+	{
+		classes.remove(name);
 	}
 	public Class<?> findClass(String name) throws ClassNotFoundException
 	{

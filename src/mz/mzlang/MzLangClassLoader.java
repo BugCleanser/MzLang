@@ -1,11 +1,11 @@
 package mz.mzlang;
 
-import mz.mzlang.compiler.*;
+import mz.*;
 
 import java.util.*;
 import java.util.concurrent.*;
 
-public class MzLangClassLoader extends ClassLoader
+public class MzLangClassLoader extends ActiveClassLoader
 {
 	public static MzLangClassLoader instance;
 	public MzLangClassLoader(ClassLoader parent)
@@ -13,23 +13,24 @@ public class MzLangClassLoader extends ClassLoader
 		super(parent);
 	}
 	
-	public Map<String,MzLangClass> loadedClasses=new ConcurrentHashMap<>();
+	public Map<String,String> codeToLoad=new ConcurrentHashMap<>();
+	public Map<MzMethodHead,Part> interfaces=new ConcurrentHashMap<>();
 	
-	void load(String code)
+	@Override
+	public Class<?> findClass(String name) throws ClassNotFoundException
 	{
-		MzLangClass mlc=MzLangCompiler.compile(code);
-		if(loadedClasses.containsKey(mlc.getName()))
-			throw new RuntimeException("Class loading with the same name.");
-		mlc.load();
-		loadedClasses.put(mlc.getName(),mlc);
+		codeToLoad.computeIfPresent(name,(k,v)->
+		{
+			//Compile
+			return null;
+		});
+		return super.findClass(name);
 	}
 	
 	@Override
-	public Class<? extends MzLangObject> findClass(String name) throws ClassNotFoundException
+	public void removeClass(String name)
 	{
-		MzLangClass mlc=loadedClasses.get(name);
-		if(mlc!=null)
-			return mlc.getJvmClass();
-		throw new ClassNotFoundException(name);
+		if(codeToLoad.remove(name)==null)
+			super.removeClass(name);
 	}
 }
