@@ -1,6 +1,6 @@
 package mz.mzlang.compiler;
 
-import mz.mzlang.*;
+import mz.mzlang.loader.*;
 
 public class MzLangCompiler
 {

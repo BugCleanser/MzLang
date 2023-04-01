@@ -1,4 +1,4 @@
-package mz.mzlang;
+package mz.mzlang.loader;
 
 import mz.*;
 
@@ -15,7 +15,6 @@ public class MzLangClassLoader extends RemovableClassLoader
 	
 	public Map<String,String> codeToLoad=new ConcurrentHashMap<>();
 	public Map<MzMethodHead,Part> interfaces=new ConcurrentHashMap<>();
-	
 	
 	public void addClass(String name,String code)
 	{

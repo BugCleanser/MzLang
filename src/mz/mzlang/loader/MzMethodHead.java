@@ -1,13 +1,13 @@
-package mz.mzlang;
+package mz.mzlang.loader;
 
 import java.util.*;
 
 public class MzMethodHead
 {
 	public String name;
-	public HashSet<MzMethodHead> returnType;
-	public List<HashSet<MzMethodHead>> parametersTypes;
-	public MzMethodHead(String name,HashSet<MzMethodHead> returnType,List<HashSet<MzMethodHead>> parametersTypes)
+	public MzInterface returnType;
+	public List<MzInterface> parametersTypes;
+	public MzMethodHead(String name,MzInterface returnType,List<MzInterface> parametersTypes)
 	{
 		this.name=name;
 		this.returnType=returnType;
