@@ -1,4 +1,4 @@
-package mz;
+package mz.mzlang.util;
 
 import java.util.*;
 import java.util.concurrent.*;

@@ -1,6 +1,6 @@
-package mz.mzlang.loader;
+package mz.mzlang;
 
-import mz.*;
+import mz.mzlang.util.*;
 
 import java.util.*;
 import java.util.concurrent.*;
