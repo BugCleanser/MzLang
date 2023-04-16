@@ -100,7 +100,6 @@ public class MzLangFirstAnalyzer
 		for(;;)
 		{
 			char sign;
-			CodeReader readerMark=reader.clone();
 			boolean whitespace=false;
 			try
 			{
@@ -116,11 +115,11 @@ public class MzLangFirstAnalyzer
 				case '\'':
 					String c=readCodeString(reader,'\'');
 					if(c.length()!=1)
-						throw readerMark.error("Wrong character length");
-					s.add(new FaLiteralConst(readerMark,c.charAt(0)));
+						throw reader.error("Wrong character length");
+					s.add(new FaLiteralConst(reader,c.charAt(0)));
 					break;
 				case '\"':
-					s.add(new FaLiteralConst(readerMark,readCodeString(reader,'\"')));
+					s.add(new FaLiteralConst(reader,readCodeString(reader,'\"')));
 					break;
 				default:
 					if(sign>='0'&&sign<='9')
@@ -164,20 +163,20 @@ public class MzLangFirstAnalyzer
 								switch(sign)
 								{
 									case 'f':
-										s.push(new FaLiteralConst(readerMark,-Float.parseFloat(sb.toString())));
+										s.push(new FaLiteralConst(reader,-Float.parseFloat(sb.toString())));
 										break;
 									case 'd':
-										s.push(new FaLiteralConst(readerMark,-Double.parseDouble(sb.toString())));
+										s.push(new FaLiteralConst(reader,-Double.parseDouble(sb.toString())));
 										break;
 									case 'l':
-										s.push(new FaLiteralConst(readerMark,-Long.decode(sb.toString())));
+										s.push(new FaLiteralConst(reader,-Long.decode(sb.toString())));
 										break;
 									default:
 										reader.back();
 										if(sb.toString().contains("."))
-											s.push(new FaLiteralConst(readerMark,-Double.parseDouble(sb.toString())));
+											s.push(new FaLiteralConst(reader,-Double.parseDouble(sb.toString())));
 										else
-											s.push(new FaLiteralConst(readerMark,-Integer.decode(sb.toString())));
+											s.push(new FaLiteralConst(reader,-Integer.decode(sb.toString())));
 								}
 								break;
 							}
@@ -185,7 +184,7 @@ public class MzLangFirstAnalyzer
 					}
 					else if(operators.contains(sign))
 					{
-						s.push(new FaOperator(readerMark,sign));
+						s.push(new FaOperator(reader,sign));
 						if((!whitespace)&&s.size()>0&&s.lastElement() instanceof FaOperator)
 						{
 							((FaOperator)s.get(s.size()-2)).last=false;
@@ -220,13 +219,13 @@ public class MzLangFirstAnalyzer
 								switch(sb.toString())
 								{
 									case "true":
-										s.push(new FaLiteralConst(readerMark,true));
+										s.push(new FaLiteralConst(reader,true));
 										break;
 									case "false":
-										s.push(new FaLiteralConst(readerMark,false));
+										s.push(new FaLiteralConst(reader,false));
 										break;
 									default:
-										s.push(new FaIdentifier(readerMark,sb.toString()));
+										s.push(new FaIdentifier(reader,sb.toString()));
 										break;
 								}
 								break;

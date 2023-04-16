@@ -2,9 +2,11 @@ package mz.mzlang.compiler.fa;
 
 public class FaElement
 {
-	public CodeReader codeReader;
+	public String codeName;
+	public int lineNum;
 	public FaElement(CodeReader codeReader)
 	{
-		this.codeReader=codeReader;
+		this.codeName=codeReader.getCodeName();
+		this.lineNum=codeReader.getLineNum();
 	}
 }
