@@ -1,15 +1,23 @@
-package mz.mzlang.compiler.parser;
+package mz.mzlang.compiler.fa;
 
 public class CodeReader implements Cloneable
 {
+	public String codeName;
 	public String code;
 	public int index;
-	public CodeReader(String code)
+	public int lineNum;
+	public CodeReader(String codeName,String code)
 	{
+		this.codeName=codeName;
 		this.code=code;
 		index=0;
+		lineNum=0;
 	}
 	
+	public String getCodeName()
+	{
+		return codeName;
+	}
 	public String getCode()
 	{
 		return code;
@@ -18,12 +26,19 @@ public class CodeReader implements Cloneable
 	{
 		return index;
 	}
+	public int getLineNum()
+	{
+		return lineNum;
+	}
 	void back()
 	{
-		index--;
+		if(code.charAt(--index)=='\n')
+			lineNum--;
 	}
 	char read() throws StringIndexOutOfBoundsException
 	{
+		if(code.charAt(index)=='\n')
+			lineNum++;
 		return code.charAt(index++);
 	}
 	public byte readHex()
@@ -37,9 +52,9 @@ public class CodeReader implements Cloneable
 		throw error("Wrong hex");
 	}
 	
-	public MzLangParseError error(String msg)
+	public FaError error(String msg)
 	{
-		return new MzLangParseError(msg);
+		return new FaError(msg);
 	}
 	
 	@Override

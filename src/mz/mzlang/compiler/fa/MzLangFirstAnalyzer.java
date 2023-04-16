@@ -1,13 +1,13 @@
-package mz.mzlang.compiler.parser;
+package mz.mzlang.compiler.fa;
 
-import java.io.*;
 import java.util.*;
 
-public class MzLangParser
+public class MzLangFirstAnalyzer
 {
-	public static MzLangParser instance=new MzLangParser();
+	public static MzLangFirstAnalyzer instance=new MzLangFirstAnalyzer();
 	
 	public Set<Character> operators;
+	public Map<Character,Character> leftBracket;
 	{
 		operators=new HashSet<>();
 		operators.add('@');
@@ -32,11 +32,12 @@ public class MzLangParser
 		operators.add('<');
 		operators.add('>');
 		operators.add('(');
-		operators.add(')');
 		operators.add('[');
-		operators.add(']');
 		operators.add('{');
-		operators.add('}');
+		leftBracket=new HashMap<>();
+		leftBracket.put(')','(');
+		leftBracket.put(']','[');
+		leftBracket.put('}','{');
 	}
 	
 	public String readCodeString(CodeReader reader,char t)
@@ -92,17 +93,19 @@ public class MzLangParser
 		return ans.toString();
 	}
 	
-	public List<MzLangParsed> parse(String code)
+	public List<FaElement> parse(String codeName,String code)
 	{
-		CodeReader reader=new CodeReader(code);
-		List<MzLangParsed> ans=new ArrayList<>();
+		CodeReader reader=new CodeReader(codeName,code);
+		Stack<FaElement> s=new Stack<>();
 		for(;;)
 		{
 			char sign;
 			CodeReader readerMark=reader.clone();
+			boolean whitespace=false;
 			try
 			{
-				while(Character.isWhitespace(sign=reader.read()));
+				while(Character.isWhitespace(sign=reader.read()))
+					whitespace=true;
 			}
 			catch(StringIndexOutOfBoundsException e)
 			{
@@ -114,10 +117,10 @@ public class MzLangParser
 					String c=readCodeString(reader,'\'');
 					if(c.length()!=1)
 						throw readerMark.error("Wrong character length");
-					ans.add(new MzLangParsedLiteralConst(readerMark,c.charAt(0)));
+					s.add(new FaLiteralConst(readerMark,c.charAt(0)));
 					break;
 				case '\"':
-					ans.add(new MzLangParsedLiteralConst(readerMark,readCodeString(reader,'\"')));
+					s.add(new FaLiteralConst(readerMark,readCodeString(reader,'\"')));
 					break;
 				default:
 					if(sign>='0'&&sign<='9')
@@ -161,27 +164,42 @@ public class MzLangParser
 								switch(sign)
 								{
 									case 'f':
-										ans.add(new MzLangParsedLiteralConst(readerMark,-Float.parseFloat(sb.toString())));
+										s.push(new FaLiteralConst(readerMark,-Float.parseFloat(sb.toString())));
 										break;
 									case 'd':
-										ans.add(new MzLangParsedLiteralConst(readerMark,-Double.parseDouble(sb.toString())));
+										s.push(new FaLiteralConst(readerMark,-Double.parseDouble(sb.toString())));
 										break;
 									case 'l':
-										ans.add(new MzLangParsedLiteralConst(readerMark,-Long.decode(sb.toString())));
+										s.push(new FaLiteralConst(readerMark,-Long.decode(sb.toString())));
 										break;
 									default:
 										reader.back();
 										if(sb.toString().contains("."))
-											ans.add(new MzLangParsedLiteralConst(readerMark,-Double.parseDouble(sb.toString())));
+											s.push(new FaLiteralConst(readerMark,-Double.parseDouble(sb.toString())));
 										else
-											ans.add(new MzLangParsedLiteralConst(readerMark,-Integer.decode(sb.toString())));
+											s.push(new FaLiteralConst(readerMark,-Integer.decode(sb.toString())));
 								}
 								break;
 							}
 						}
 					}
 					else if(operators.contains(sign))
-						ans.add(new MzLangParsedOperator(readerMark,sign));
+					{
+						s.push(new FaOperator(readerMark,sign));
+						if((!whitespace)&&s.size()>0&&s.lastElement() instanceof FaOperator)
+						{
+							((FaOperator)s.get(s.size()-2)).last=false;
+							((FaOperator)s.lastElement()).first=false;
+						}
+					}
+					else if(leftBracket.containsKey(sign))
+					{
+						FaComponent a=new FaComponent(reader,leftBracket.get(sign));
+						while((!(s.lastElement() instanceof FaOperator))||((FaOperator)s.lastElement()).operator!=a.leftBracket)
+							a.push(s.pop());
+						s.pop();
+						s.push(a);
+					}
 					else
 					{
 						StringBuilder sb=new StringBuilder();
@@ -202,13 +220,13 @@ public class MzLangParser
 								switch(sb.toString())
 								{
 									case "true":
-										ans.add(new MzLangParsedLiteralConst(readerMark,true));
+										s.push(new FaLiteralConst(readerMark,true));
 										break;
 									case "false":
-										ans.add(new MzLangParsedLiteralConst(readerMark,false));
+										s.push(new FaLiteralConst(readerMark,false));
 										break;
 									default:
-										ans.add(new MzLangParsedIdentifier(readerMark,sb.toString()));
+										s.push(new FaIdentifier(readerMark,sb.toString()));
 										break;
 								}
 								break;
@@ -219,6 +237,9 @@ public class MzLangParser
 					}
 			}
 		}
+		List<FaElement> ans=new ArrayList<>();
+		while(!s.isEmpty())
+			ans.add(s.pop());
 		return ans;
 	}
 }

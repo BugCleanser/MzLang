@@ -1,0 +1,39 @@
+package mzlang.stdlib.primitive;
+
+using mzlang.stdlib;
+
+class Int: Number
+{
+    jvm.java.lang.Integer raw;
+    init()
+    {
+    }
+
+    extern Int add(Byte obj);
+    extern Int add(Short obj);
+    extern Int add(Int obj);
+    Long add(Long obj)=obj+this;
+    Float add(Float obj)=obj+this;
+    Double add(Double obj)=obj+this;
+
+    extern Int subtract(Byte obj);
+    extern Int subtract(Short obj);
+    extern Int subtract(Int obj);
+    extern Long subtract(Long obj);
+    extern Float subtract(Float obj);
+    extern Double subtract(Double obj);
+
+    extern Int multiply(Byte obj);
+    extern Int multiply(Short obj);
+    extern Int multiply(Int obj);
+    Long multiply(Long obj)=obj*this;
+    Float multiply(Float obj)=obj*this;
+    Double multiply(Double obj)=obj*this;
+
+    extern Int divide(Byte obj);
+    extern Int divide(Short obj);
+    extern Int divide(Int obj);
+    extern Long divide(Long obj);
+    extern Float divide(Float obj);
+    extern Double divide(Double obj);
+}

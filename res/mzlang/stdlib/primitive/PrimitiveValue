@@ -1,0 +1,3 @@
+package mzlang.stdlib.primitive;
+
+placeholder PrimitiveValue=Bool|Char|Byte|Short|Int|Long|Float|Double;

@@ -1,0 +1,10 @@
+package mzlang.stdlib;
+
+abstract class Number
+{
+    abstract jvm.java.lang.Number raw.get();
+    abstract Number+ add(Number+ obj);
+    abstract Number+ subtract(Number+ obj);
+    abstract Number+ multiply(Number+ obj);
+    abstract Number+ divide(Number+ obj);
+}

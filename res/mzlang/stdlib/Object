@@ -1,0 +1,6 @@
+package mzlang.stdlib;
+
+class Object
+{
+    extern Class[Object+] class.get();
+}
