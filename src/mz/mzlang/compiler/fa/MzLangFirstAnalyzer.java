@@ -93,7 +93,7 @@ public class MzLangFirstAnalyzer
 		return ans.toString();
 	}
 	
-	public List<FaElement> parse(String codeName,String code)
+	public List<FaElement> analyze(String codeName,String code)
 	{
 		CodeReader reader=new CodeReader(codeName,code);
 		Stack<FaElement> s=new Stack<>();
