@@ -1,5 +1,7 @@
 package mz.mzlang.compiler.fa;
 
+import mz.mzlang.compiler.*;
+
 import java.util.*;
 
 public class MzLangFirstAnalyzer
@@ -85,7 +87,7 @@ public class MzLangFirstAnalyzer
 						break;
 					default:
 						reader.back();
-						throw reader.error("Wrong escape");
+						throw new MzLangCompilerError(reader,"Wrong escape");
 				}
 			}
 			ans.append(sign);
@@ -115,7 +117,7 @@ public class MzLangFirstAnalyzer
 				case '\'':
 					String c=readCodeString(reader,'\'');
 					if(c.length()!=1)
-						throw reader.error("Wrong character length");
+						throw new MzLangCompilerError(reader,"Wrong character length");
 					s.add(new FaLiteralConst(reader,c.charAt(0)));
 					break;
 				case '\"':

@@ -1,9 +1,9 @@
 package mz.mzlang.compiler.la;
 
-public class SrcMzLangElement
+public class SrcMzLangFile
 {
 	public String name;
-	public SrcMzLangElement(String name)
+	public SrcMzLangFile(String name)
 	{
 		this.name=name;
 	}

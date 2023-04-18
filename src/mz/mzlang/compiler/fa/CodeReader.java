@@ -1,5 +1,7 @@
 package mz.mzlang.compiler.fa;
 
+import mz.mzlang.compiler.*;
+
 public class CodeReader implements Cloneable
 {
 	public String codeName;
@@ -49,12 +51,7 @@ public class CodeReader implements Cloneable
 		else if(t>='a'&&t<='f')
 			return (byte)(t-'a'+10);
 		back();
-		throw error("Wrong hex");
-	}
-	
-	public FaError error(String msg)
-	{
-		return new FaError(msg);
+		throw new MzLangCompilerError(this,"Wrong hex");
 	}
 	
 	@Override
